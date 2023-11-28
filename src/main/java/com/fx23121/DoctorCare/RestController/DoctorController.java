@@ -1,17 +1,16 @@
 package com.fx23121.DoctorCare.RestController;
 
-import com.fx23121.DoctorCare.Entity.User;
 import com.fx23121.DoctorCare.Service.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
-
+@RequestMapping("/doctor")
+public class DoctorController {
     @Autowired
     private UserDetailService userDetailService;
 
@@ -21,9 +20,6 @@ public class UserController {
 
         System.out.println(auth.getPrincipal());
 
-        return "User authority";
+        return "Doctor authority";
     }
-
-
-
 }

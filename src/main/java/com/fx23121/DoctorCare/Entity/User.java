@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,8 +49,8 @@ public class User implements UserDetails {
     @Column
     private int enabled;
 
-    @Column
-    private int locked;
+    @Column(name = "locked")
+    private int notLocked;
 
     @Column(name = "create_at")
     private Date createAt;
@@ -92,7 +91,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return locked == 1;
+        return notLocked == 1;
     }
 
     @Override
