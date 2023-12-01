@@ -1,10 +1,8 @@
 package com.fx23121.DoctorCare.RestController;
 
+import com.fx23121.DoctorCare.Exception.BookingException;
 import com.fx23121.DoctorCare.Exception.JwtAuthenticationException;
-import com.fx23121.DoctorCare.Response.FieldValidateError;
-import com.fx23121.DoctorCare.Response.JwtResponse;
-import com.fx23121.DoctorCare.Response.SeverErrorResponse;
-import com.fx23121.DoctorCare.Response.UserNotFoundError;
+import com.fx23121.DoctorCare.Response.*;
 import com.fx23121.DoctorCare.Exception.FieldValidateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -47,4 +45,13 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<BookingError> bookingError(BookingException e) {
+        int status = HttpStatus.BAD_REQUEST.value();
+        String message = e.getMessage();
+        long timeStamp = System.currentTimeMillis();
+
+        BookingError error = new BookingError(status, message, timeStamp);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }

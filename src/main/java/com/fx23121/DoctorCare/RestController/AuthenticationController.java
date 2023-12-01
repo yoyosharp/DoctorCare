@@ -63,7 +63,7 @@ public class AuthenticationController {
     @GetMapping("/forgetPassword")
     public ResponseEntity<JwtResponse> forgetPassword(@RequestParam String email) {
         String token = userService.requestChangePassword(email);
-        return new ResponseEntity<>(new JwtResponse("Success creating password reset request", null, token, null), HttpStatus.OK);
+        return new ResponseEntity<>(new JwtResponse("Successfully created password reset request", null, token, null), HttpStatus.OK);
     }
 
     @PostMapping("/changePassword")

@@ -1,14 +1,18 @@
 package com.fx23121.DoctorCare.Service;
 
+import com.fx23121.DoctorCare.Entity.Booking;
 import com.fx23121.DoctorCare.Entity.Role;
 import com.fx23121.DoctorCare.Entity.User;
 import com.fx23121.DoctorCare.Exception.FieldValidateException;
 import com.fx23121.DoctorCare.Model.ChangePasswordDTO;
 import com.fx23121.DoctorCare.Model.LoginDTO;
+import com.fx23121.DoctorCare.Model.UserInfo;
 import com.fx23121.DoctorCare.Model.UserModel;
+import com.fx23121.DoctorCare.Repository.BookingRepository;
 import com.fx23121.DoctorCare.Repository.RoleRepository;
 import com.fx23121.DoctorCare.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -39,6 +44,8 @@ public class UserServiceImpl implements UserService{
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private BookingRepository bookingRepository;
 
 
     @Override
@@ -90,16 +97,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public String requestChangePassword(String email) {
-
-        //Find the user in database
-        User currentUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Could not find the user with email " + email));
-
-        return jwtService.generatePasswordResetToken(currentUser.getEmail());
-    }
-
-    @Override
     public String userLogin(LoginDTO loginDTO) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
@@ -110,12 +107,25 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public String requestChangePassword(String email) {
+
+        //Find the user in database
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Could not find the user with email " + email));
+
+        return jwtService.generatePasswordResetToken(currentUser.getEmail());
+    }
+
+    private User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Could not find the user with email " + auth.getName()));
+    }
+
+    @Override
     public boolean changePassword(ChangePasswordDTO changePasswordDTO) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        User currentUser = userRepository.findByEmail(auth.getName()).
-                orElseThrow(() -> new UsernameNotFoundException("Could not find the user with email " + auth.getName()));
+        User currentUser = getCurrentUser();
 
         if (!changePasswordDTO.getVerifyPassword().equals(changePasswordDTO.getPassword())) throw new FieldValidateException("Verify password does not match");
 
@@ -123,6 +133,16 @@ public class UserServiceImpl implements UserService{
         userRepository.save(currentUser);
 
         return true;
+    }
+
+    @Override
+    public UserInfo getUserInfo() {
+
+        User currentUser = getCurrentUser();
+
+        List<Booking> bookingList = bookingRepository.getUserBookingList(currentUser.getId());
+
+        return new UserInfo(currentUser, bookingList);
     }
 
 

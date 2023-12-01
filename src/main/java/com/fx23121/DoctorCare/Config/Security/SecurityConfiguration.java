@@ -45,9 +45,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/error").permitAll()
                         .requestMatchers(HttpMethod.GET,"/forgetPassword").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/changePassword" ).hasRole("USER")
+                        .requestMatchers(HttpMethod.GET,"/public/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/changePassword" ).hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/user/**").hasRole("USER")
                         .requestMatchers(HttpMethod.GET, "/doctor/**").hasRole("DOCTOR")

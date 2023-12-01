@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "time_slot")
+@Table(name = "booking")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,15 +24,15 @@ public class Booking {
     @Column
     private int status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
-    private Post Post;
+    private Post post;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "time_slot_id")
     private TimeSlot timeSlot;
 }

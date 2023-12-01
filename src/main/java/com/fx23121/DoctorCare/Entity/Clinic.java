@@ -34,4 +34,9 @@ public class Clinic {
 
     @Column
     private int booked;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id")
+    private Location location;
+
 }

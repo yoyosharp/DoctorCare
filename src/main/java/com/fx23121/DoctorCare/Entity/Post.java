@@ -50,8 +50,12 @@ public class Post {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "price_range_id")
+    private PriceRange priceRange;
+
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "post_tome_slot",
+    @JoinTable(name = "post_time_slot",
                 joinColumns = @JoinColumn(name = "post_id"),
                 inverseJoinColumns = @JoinColumn(name = "time_slot_id"))
     private Set<TimeSlot> timeSlots;

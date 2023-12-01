@@ -3,6 +3,7 @@ package com.fx23121.DoctorCare.Service;
 import com.fx23121.DoctorCare.Entity.User;
 import com.fx23121.DoctorCare.Model.ChangePasswordDTO;
 import com.fx23121.DoctorCare.Model.LoginDTO;
+import com.fx23121.DoctorCare.Model.UserInfo;
 import com.fx23121.DoctorCare.Model.UserModel;
 
 public interface UserService {
@@ -15,4 +16,6 @@ public interface UserService {
     String userLogin(LoginDTO loginDTO);
 
     boolean changePassword(ChangePasswordDTO changePasswordDTO);
+
+    UserInfo getUserInfo();
 }
