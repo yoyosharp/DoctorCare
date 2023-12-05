@@ -32,7 +32,7 @@ public class MultipartServiceImpl implements MultipartService {
 
                 Path uploadPath = Paths.get(resource.getFile().getAbsolutePath()).resolve(folderName);
                 System.out.println(uploadPath);
-                if (!Files.exists(uploadPath) || !Files.isDirectory(uploadPath))Files.createDirectories(uploadPath);
+                if (!Files.exists(uploadPath) || !Files.isDirectory(uploadPath)) Files.createDirectories(uploadPath);
 
                 Path uploadFile = uploadPath.resolve(fileName).normalize();
                 try (InputStream inputStream = file.getInputStream()) {
@@ -40,8 +40,7 @@ public class MultipartServiceImpl implements MultipartService {
                 }
 
                 return uploadFile.toString();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }

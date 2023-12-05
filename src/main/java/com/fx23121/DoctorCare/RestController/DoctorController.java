@@ -7,7 +7,6 @@ import com.fx23121.DoctorCare.Model.PatientInfo;
 import com.fx23121.DoctorCare.Model.ReviewBookingDTO;
 import com.fx23121.DoctorCare.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -51,8 +50,8 @@ public class DoctorController {
     }
 
     @PutMapping("/reviewBooking")
-    public ResponseEntity<?> reviewBooking(@RequestBody ReviewBookingDTO reviewBookingDTO){
-        boolean result =  bookingService.reviewBooking(reviewBookingDTO);
+    public ResponseEntity<?> reviewBooking(@RequestBody ReviewBookingDTO reviewBookingDTO) {
+        boolean result = bookingService.reviewBooking(reviewBookingDTO);
 
         if (result) return new ResponseEntity<>("Success", HttpStatus.OK);
 

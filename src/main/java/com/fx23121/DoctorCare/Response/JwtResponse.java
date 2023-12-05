@@ -2,9 +2,6 @@ package com.fx23121.DoctorCare.Response;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
 
 @Data
 @RequiredArgsConstructor

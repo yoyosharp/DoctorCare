@@ -12,6 +12,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     @Autowired
     private SpecializationRepository specializationRepository;
+
     @Override
     public Page<Specialization> getTopSpecialization(Pageable pageable) {
         return specializationRepository.findAll(pageable);

@@ -2,10 +2,10 @@ package com.fx23121.DoctorCare.RestController;
 
 import com.fx23121.DoctorCare.Entity.User;
 import com.fx23121.DoctorCare.Exception.UserNotFoundException;
+import com.fx23121.DoctorCare.Model.ChangePasswordDTO;
 import com.fx23121.DoctorCare.Model.EmailDetails;
 import com.fx23121.DoctorCare.Model.LoginDTO;
 import com.fx23121.DoctorCare.Model.UserModel;
-import com.fx23121.DoctorCare.Model.ChangePasswordDTO;
 import com.fx23121.DoctorCare.Response.JwtResponse;
 import com.fx23121.DoctorCare.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -48,23 +45,19 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> userLogin(@RequestBody LoginDTO loginDTO) {
 
-        try{
+        try {
             String jwtToken = userService.userLogin(loginDTO);
 
             User currentUser = userService.findUserByEmail(loginDTO.getEmail());
 
             return new ResponseEntity<>(new JwtResponse(
                     "Login success", currentUser.getId(), jwtToken), HttpStatus.OK);
-        }
-        catch (UserNotFoundException e) {
+        } catch (UserNotFoundException e) {
             return new ResponseEntity<>(new JwtResponse(e.getMessage(), null, null), HttpStatus.BAD_REQUEST);
-        }
-        catch (LockedException e) {
+        } catch (LockedException e) {
             User currentUser = userService.findUserByEmail(loginDTO.getEmail());
             return new ResponseEntity<>(new JwtResponse("Account is locked, note: " + currentUser.getLockDetail(), null, null), HttpStatus.UNAUTHORIZED);
-        }
-        catch (AuthenticationException e)
-        {
+        } catch (AuthenticationException e) {
             return new ResponseEntity<>(new JwtResponse(e.getMessage(), null, null), HttpStatus.UNAUTHORIZED);
         }
     }

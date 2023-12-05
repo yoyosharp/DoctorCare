@@ -3,7 +3,6 @@ package com.fx23121.DoctorCare.Service;
 
 import com.fx23121.DoctorCare.Exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -20,13 +19,11 @@ import java.util.Date;
 @Service
 public class JwtService {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
-
     @Value("${jwt.auth-expiration-time-second}")
     private long AUTH_EXPIRE_TIME;
-
-    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     //generate key
     private Key key() {
@@ -76,8 +73,7 @@ public class JwtService {
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage());
             throw new JwtAuthenticationException("JWT claims set is empty");
-        }
-        catch (SignatureException e) {
+        } catch (SignatureException e) {
             logger.error("Signature Exception : {}", e.getMessage());
             throw new JwtAuthenticationException("Invalid key or JWT has been modified");
         }

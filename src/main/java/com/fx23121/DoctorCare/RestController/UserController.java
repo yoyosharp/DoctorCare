@@ -1,11 +1,9 @@
 package com.fx23121.DoctorCare.RestController;
 
 import com.fx23121.DoctorCare.Entity.Booking;
-import com.fx23121.DoctorCare.Entity.User;
 import com.fx23121.DoctorCare.Model.BookingInfoDTO;
 import com.fx23121.DoctorCare.Model.UserInfo;
 import com.fx23121.DoctorCare.Service.BookingService;
-import com.fx23121.DoctorCare.Service.UserDetailService;
 import com.fx23121.DoctorCare.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final String EMAIL_REGEX = "^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$";
 
@@ -106,12 +106,13 @@ public class UserServiceImpl implements UserService{
 
         //Password validation
         if (userModel.getPassword().isEmpty()) throw new FieldValidateException("Please enter password");
-        if (!userModel.getPassword().equals(userModel.getVerifyPassword())) throw new FieldValidateException("Verify password does not match");
+        if (!userModel.getPassword().equals(userModel.getVerifyPassword()))
+            throw new FieldValidateException("Verify password does not match");
 
         return true;
     }
 
-    private User createNewUser(UserModel userModel){
+    private User createNewUser(UserModel userModel) {
         User newUser = new User();
         newUser.setName(userModel.getName());
         newUser.setEmail(userModel.getEmail());
@@ -164,12 +165,14 @@ public class UserServiceImpl implements UserService{
     @Override
     public boolean changePassword(ChangePasswordDTO changePasswordDTO) {
         //validate password and verify password field
-        if (!changePasswordDTO.getVerifyPassword().equals(changePasswordDTO.getPassword())) throw new InvalidPasswordResetException("Verify password does not match");
+        if (!changePasswordDTO.getVerifyPassword().equals(changePasswordDTO.getPassword()))
+            throw new InvalidPasswordResetException("Verify password does not match");
         //validate token
         ForgotPasswordToken token = forgotPasswordTokenRepository.findByToken(changePasswordDTO.getToken())
                 .orElseThrow(() -> new InvalidPasswordResetException("Invalid token"));
 
-        if (LocalDateTime.now().isAfter(token.getExpiredTime())) throw new InvalidPasswordResetException("Request token expired");
+        if (LocalDateTime.now().isAfter(token.getExpiredTime()))
+            throw new InvalidPasswordResetException("Request token expired");
 
         //all validated, change password as per request
         User currentUser = token.getUser();
@@ -187,7 +190,7 @@ public class UserServiceImpl implements UserService{
 
         List<Booking> bookingList = bookingRepository.getUserBookingList(currentUser.getId());
 
-        return new UserInfo(currentUser, bookingList);
+        return new UserInfo(bookingList, currentUser);
     }
 
     @Override
@@ -256,7 +259,8 @@ public class UserServiceImpl implements UserService{
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ManagerException("Cannot find the doctor"));
 
-        if (doctor.getUser().getNonLocked() != 1) throw new ManagerException("Can only lock user with non-locked status");
+        if (doctor.getUser().getNonLocked() != 1)
+            throw new ManagerException("Can only lock user with non-locked status");
         doctor.getUser().setNonLocked(0);
         doctor.getUser().setLockDetail(note);
 

@@ -12,6 +12,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleRepository roleRepository;
+
     @Override
     public Role getRole(int roleId) {
         return roleRepository.findById(roleId).orElseThrow(() -> new RuntimeException("Exception when find role by id"));

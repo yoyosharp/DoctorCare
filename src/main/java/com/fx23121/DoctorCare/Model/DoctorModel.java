@@ -1,7 +1,6 @@
 package com.fx23121.DoctorCare.Model;
 
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

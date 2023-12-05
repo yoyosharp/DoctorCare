@@ -8,7 +8,10 @@ import com.fx23121.DoctorCare.Model.ReviewBookingDTO;
 import com.fx23121.DoctorCare.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,10 +46,12 @@ public class BookingServiceImpl implements BookingService {
         User currentUser = getCurrentUser();
         //check if user already booked the same post at the same time
         Optional<Booking> result = bookingRepository.findUserBooking(currentUser.getId(), bookingInfoDTO.getPostId(), bookingInfoDTO.getTimeSlotId(), bookingInfoDTO.getDate());
-        if (result.isPresent()) throw new BookingException("User has already booked an appointment for current post at the same time");
+        if (result.isPresent())
+            throw new BookingException("User has already booked an appointment for current post at the same time");
         //check if too many booking for the same post at the same time
         long currentPostBookedAtTimeSlot = bookingRepository.getPostBookingAtTimeSlotCount(bookingInfoDTO.getPostId(), bookingInfoDTO.getTimeSlotId(), bookingInfoDTO.getDate());
-        if (currentPostBookedAtTimeSlot >= maxPostBookingAtTimeSlot) throw new BookingException("Booking queue for current post at this time has full already");
+        if (currentPostBookedAtTimeSlot >= maxPostBookingAtTimeSlot)
+            throw new BookingException("Booking queue for current post at this time has full already");
 
         //load current Post
         Post currentPost = postRepository.findById(bookingInfoDTO.getPostId());
@@ -57,7 +62,8 @@ public class BookingServiceImpl implements BookingService {
         //check if the timeslot is available for the current post
         List<Integer> postTimeSlotIdList = currentPost.getTimeSlots().stream()
                 .map(postTimeSlot -> postTimeSlot.getId()).toList();
-        if (!postTimeSlotIdList.contains(timeSlot.getId())) throw new BookingException("Current time slot is not available for current post");
+        if (!postTimeSlotIdList.contains(timeSlot.getId()))
+            throw new BookingException("Current time slot is not available for current post");
 
         Booking newBooking = new Booking();
         newBooking.setUser(currentUser);
@@ -84,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
         Doctor currentDoctor = doctorRepository.findByUserId(currentUser.getId())
                 .orElseThrow(() -> new UsernameNotFoundException("Could not authorize the user"));
 
-        pageIndex = (pageIndex == null)? 0 : pageIndex - 1;
+        pageIndex = (pageIndex == null) ? 0 : pageIndex - 1;
         if (pageSize == null) pageSize = 5;
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
 
@@ -116,7 +122,7 @@ public class BookingServiceImpl implements BookingService {
         //check if the reject reason is empty
         if (reviewBookingDTO.isRejected() && reviewBookingDTO.getNote().isEmpty()) return false;
 
-        currentBooking.setStatus(reviewBookingDTO.isRejected()? -1 : 1);
+        currentBooking.setStatus(reviewBookingDTO.isRejected() ? -1 : 1);
         if (currentBooking.getStatus() == -1) currentBooking.setRejectionDetail(reviewBookingDTO.getNote());
         bookingRepository.save(currentBooking);
         return true;

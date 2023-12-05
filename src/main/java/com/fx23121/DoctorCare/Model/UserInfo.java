@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class UserInfo {
 
-    private User user;
-
     List<Booking> bookingList;
+    private User user;
 }

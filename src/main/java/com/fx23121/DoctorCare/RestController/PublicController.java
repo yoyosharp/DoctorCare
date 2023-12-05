@@ -1,7 +1,6 @@
 package com.fx23121.DoctorCare.RestController;
 
 import com.fx23121.DoctorCare.Entity.*;
-import com.fx23121.DoctorCare.Model.BookingInfoDTO;
 import com.fx23121.DoctorCare.Model.PageableResult;
 import com.fx23121.DoctorCare.Model.PostSearchFilter;
 import com.fx23121.DoctorCare.Service.*;
@@ -12,11 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -36,9 +31,9 @@ public class PublicController {
 
     @GetMapping("/topSpecialization")
     public ResponseEntity<?> getTopSpecialization(@RequestParam(value = "page", required = false) Integer pageIndex,
-                                                                     @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+                                                  @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
-        pageIndex = (pageIndex == null)? 0 : pageIndex - 1;
+        pageIndex = (pageIndex == null) ? 0 : pageIndex - 1;
         if (pageSize == null) pageSize = 5;
         //display by most searched / most booked specialization
         Pageable pageable = PageRequest.of(pageIndex, pageSize,
@@ -51,9 +46,9 @@ public class PublicController {
 
     @GetMapping("/topClinic")
     public ResponseEntity<?> getTopClinic(@RequestParam(value = "page", required = false) Integer pageIndex,
-                                                     @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+                                          @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
-        pageIndex = (pageIndex == null)? 0 : pageIndex - 1;
+        pageIndex = (pageIndex == null) ? 0 : pageIndex - 1;
         if (pageSize == null) pageSize = 5;
         //display by most searched / most booked specialization
         Pageable pageable = PageRequest.of(pageIndex, pageSize,
@@ -66,10 +61,10 @@ public class PublicController {
 
     @GetMapping("/search")
     public ResponseEntity<?> postSearch(@RequestParam(value = "type", required = false) Integer type,
-                                                     @RequestParam(value = "page", required = false) Integer pageIndex,
-                                                     @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                                     @RequestBody PostSearchFilter filter){
-        pageIndex = (pageIndex == null)? 0 : pageIndex - 1;
+                                        @RequestParam(value = "page", required = false) Integer pageIndex,
+                                        @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                        @RequestBody PostSearchFilter filter) {
+        pageIndex = (pageIndex == null) ? 0 : pageIndex - 1;
         if (pageSize == null) pageSize = 5;
 
         Pageable pageable = PageRequest.of(pageIndex, pageSize);

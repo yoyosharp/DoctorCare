@@ -1,6 +1,6 @@
 package com.fx23121.DoctorCare.Exception;
 
-public class FieldValidateException extends RuntimeException{
+public class FieldValidateException extends RuntimeException {
     public FieldValidateException(String message) {
         super(message);
     }

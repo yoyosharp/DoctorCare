@@ -4,14 +4,12 @@ import com.fx23121.DoctorCare.Entity.Post;
 import com.fx23121.DoctorCare.Model.PageableResult;
 import com.fx23121.DoctorCare.Model.PostSearchFilter;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @EnableTransactionManagement
@@ -93,8 +91,8 @@ public class PostRepositoryImpl implements PostRepository {
 
         List<Post> list = resultQuery.getResultList();
 
-        int maxPageCount = (int) (totalResult/pageSize);
-        if (totalResult % pageSize != 0) maxPageCount ++;
+        int maxPageCount = (int) (totalResult / pageSize);
+        if (totalResult % pageSize != 0) maxPageCount++;
 
         return new PageableResult<>(list, totalResult, maxPageCount);
     }
@@ -104,10 +102,9 @@ public class PostRepositoryImpl implements PostRepository {
 
         TypedQuery<Post> query = entityManager.createQuery("FROM Post WHERE id = :postId", Post.class);
         query.setParameter("postId", postId);
-        try{
+        try {
             return query.getSingleResult();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

@@ -22,25 +22,27 @@ public class AdminController {
     private UserService userService;
     @Autowired
     private BookingService bookingService;
-    
+
     @GetMapping("/demo")
     public String sayHello() {
         return "Admin authority";
     }
 
     @PostMapping("/addDoctor")
-    public ResponseEntity<String> addDoctor(@RequestBody DoctorModel doctorModel){
+    public ResponseEntity<String> addDoctor(@RequestBody DoctorModel doctorModel) {
 
         Doctor doctor = userService.addDoctor(doctorModel);
 
-        if (doctor != null) return new ResponseEntity<>("Creating doctor success, doctor ID: " + doctor.getId(), HttpStatus.OK);
+        if (doctor != null)
+            return new ResponseEntity<>("Creating doctor success, doctor ID: " + doctor.getId(), HttpStatus.OK);
         else return new ResponseEntity<>("Failed", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PutMapping("/lockUser")
     public ResponseEntity<?> lockUser(@RequestBody AccountLockDTO accountLockDTO) {
         //validate the lock reason is not empty
-        if (accountLockDTO.getNote().isEmpty()) return new ResponseEntity<>("Please enter lock reason", HttpStatus.BAD_REQUEST);
+        if (accountLockDTO.getNote().isEmpty())
+            return new ResponseEntity<>("Please enter lock reason", HttpStatus.BAD_REQUEST);
 
         User user = userService.lockUser(accountLockDTO.getUserId(), accountLockDTO.getNote());
 
@@ -50,7 +52,8 @@ public class AdminController {
     @PutMapping("/lockDoctor")
     public ResponseEntity<?> lockDoctor(@RequestBody AccountLockDTO accountLockDTO) {
         //validate the lock reason is not empty
-        if (accountLockDTO.getNote().isEmpty()) return new ResponseEntity<>("Please enter lock reason", HttpStatus.BAD_REQUEST);
+        if (accountLockDTO.getNote().isEmpty())
+            return new ResponseEntity<>("Please enter lock reason", HttpStatus.BAD_REQUEST);
 
         Doctor doctor = userService.lockDoctor(accountLockDTO.getDoctorId(), accountLockDTO.getNote());
 
@@ -77,7 +80,8 @@ public class AdminController {
     public ResponseEntity<?> userBookingDetail(@RequestParam("userId") int userId) {
         List<Booking> userBookingDetail = bookingService.getUserBookingDetail(userId);
 
-        if (userBookingDetail.isEmpty()) return new ResponseEntity<>("User has not book any service yet", HttpStatus.OK);
+        if (userBookingDetail.isEmpty())
+            return new ResponseEntity<>("User has not book any service yet", HttpStatus.OK);
 
         return new ResponseEntity<>(userBookingDetail, HttpStatus.OK);
     }
@@ -87,11 +91,12 @@ public class AdminController {
                                                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                                  @RequestParam(value = "page", required = false) Integer pageIndex) {
         if (pageSize == null) pageSize = 5;
-        pageIndex = pageIndex == null? 0 : pageIndex - 1;
+        pageIndex = pageIndex == null ? 0 : pageIndex - 1;
 
         Page<Booking> doctorBookingDetail = bookingService.getDoctorBookingDetail(doctorId, pageSize, pageIndex);
 
-        if (doctorBookingDetail.getContent().isEmpty()) return new ResponseEntity<>("User has not book any service yet", HttpStatus.OK);
+        if (doctorBookingDetail.getContent().isEmpty())
+            return new ResponseEntity<>("User has not book any service yet", HttpStatus.OK);
 
         return new ResponseEntity<>(doctorBookingDetail, HttpStatus.OK);
     }
