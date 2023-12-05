@@ -54,7 +54,7 @@ public class Post {
     @JoinColumn(name = "price_range_id")
     private PriceRange priceRange;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany()
     @JoinTable(name = "post_time_slot",
                 joinColumns = @JoinColumn(name = "post_id"),
                 inverseJoinColumns = @JoinColumn(name = "time_slot_id"))

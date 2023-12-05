@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Entity
 @Table(name = "booking")
 @Data
@@ -24,15 +26,22 @@ public class Booking {
     @Column
     private int status;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @Column
+    private Date date;
+
+    @Column(name = "rejection_detail")
+    private String rejectionDetail;
+
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "time_slot_id")
     private TimeSlot timeSlot;
+
 }

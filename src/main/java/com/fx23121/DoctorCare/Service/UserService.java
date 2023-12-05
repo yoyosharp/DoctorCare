@@ -1,10 +1,8 @@
 package com.fx23121.DoctorCare.Service;
 
+import com.fx23121.DoctorCare.Entity.Doctor;
 import com.fx23121.DoctorCare.Entity.User;
-import com.fx23121.DoctorCare.Model.ChangePasswordDTO;
-import com.fx23121.DoctorCare.Model.LoginDTO;
-import com.fx23121.DoctorCare.Model.UserInfo;
-import com.fx23121.DoctorCare.Model.UserModel;
+import com.fx23121.DoctorCare.Model.*;
 
 public interface UserService {
     User addUser(UserModel userModel);
@@ -18,4 +16,16 @@ public interface UserService {
     boolean changePassword(ChangePasswordDTO changePasswordDTO);
 
     UserInfo getUserInfo();
+
+    PatientInfo getPatientInfo(int userId);
+
+    Doctor addDoctor(DoctorModel doctorModel);
+
+    User lockUser(int userId, String note);
+
+    Doctor lockDoctor(int doctorId, String note);
+
+    void unlockUser(int userId);
+
+    void unlockDoctor(int doctorId);
 }

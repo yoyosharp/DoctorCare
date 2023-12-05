@@ -1,21 +1,22 @@
 package com.fx23121.DoctorCare.RestController;
 
 import com.fx23121.DoctorCare.Entity.User;
+import com.fx23121.DoctorCare.Exception.UserNotFoundException;
+import com.fx23121.DoctorCare.Model.EmailDetails;
 import com.fx23121.DoctorCare.Model.LoginDTO;
 import com.fx23121.DoctorCare.Model.UserModel;
 import com.fx23121.DoctorCare.Model.ChangePasswordDTO;
 import com.fx23121.DoctorCare.Response.JwtResponse;
-import com.fx23121.DoctorCare.Service.JwtService;
-import com.fx23121.DoctorCare.Service.RoleService;
-import com.fx23121.DoctorCare.Service.UserDetailService;
-import com.fx23121.DoctorCare.Service.UserService;
+import com.fx23121.DoctorCare.Service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,7 +28,8 @@ public class AuthenticationController {
     private UserDetailService userDetailService;
     @Autowired
     private AuthenticationManager authenticationManager;
-
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private RoleService roleService;
     @Autowired
@@ -52,18 +54,30 @@ public class AuthenticationController {
             User currentUser = userService.findUserByEmail(loginDTO.getEmail());
 
             return new ResponseEntity<>(new JwtResponse(
-                    "Login success", currentUser.getId(), jwtToken, currentUser.getAuthorities()), HttpStatus.OK);
+                    "Login success", currentUser.getId(), jwtToken), HttpStatus.OK);
+        }
+        catch (UserNotFoundException e) {
+            return new ResponseEntity<>(new JwtResponse(e.getMessage(), null, null), HttpStatus.BAD_REQUEST);
+        }
+        catch (LockedException e) {
+            User currentUser = userService.findUserByEmail(loginDTO.getEmail());
+            return new ResponseEntity<>(new JwtResponse("Account is locked, note: " + currentUser.getLockDetail(), null, null), HttpStatus.UNAUTHORIZED);
         }
         catch (AuthenticationException e)
         {
-            return new ResponseEntity<>(new JwtResponse("Bad credentials", null, null, null), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new JwtResponse(e.getMessage(), null, null), HttpStatus.UNAUTHORIZED);
         }
     }
 
     @GetMapping("/forgetPassword")
-    public ResponseEntity<JwtResponse> forgetPassword(@RequestParam String email) {
+    public ResponseEntity<?> forgetPassword(@RequestParam String email) {
         String token = userService.requestChangePassword(email);
-        return new ResponseEntity<>(new JwtResponse("Successfully created password reset request", null, token, null), HttpStatus.OK);
+
+        EmailDetails emailDetails = new EmailDetails(email, "Your token: " + token, "Password reset token ", null);
+
+        emailService.sendEmailWithoutAttachment(emailDetails);
+
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @PostMapping("/changePassword")

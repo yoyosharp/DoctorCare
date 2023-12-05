@@ -35,7 +35,7 @@ public class PublicController {
     private DoctorService doctorService;
 
     @GetMapping("/topSpecialization")
-    public ResponseEntity<List<Specialization>> getTopSpecialization(@RequestParam(value = "page", required = false) Integer pageIndex,
+    public ResponseEntity<?> getTopSpecialization(@RequestParam(value = "page", required = false) Integer pageIndex,
                                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
         pageIndex = (pageIndex == null)? 0 : pageIndex - 1;
@@ -46,11 +46,11 @@ public class PublicController {
 
         Page<Specialization> specializations = specializationService.getTopSpecialization(pageable);
 
-        return new ResponseEntity<>(specializations.getContent(), HttpStatus.OK);
+        return new ResponseEntity<>(specializations, HttpStatus.OK);
     }
 
     @GetMapping("/topClinic")
-    public ResponseEntity<List<Clinic>> getTopClinic(@RequestParam(value = "page", required = false) Integer pageIndex,
+    public ResponseEntity<?> getTopClinic(@RequestParam(value = "page", required = false) Integer pageIndex,
                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
 
         pageIndex = (pageIndex == null)? 0 : pageIndex - 1;
@@ -61,11 +61,11 @@ public class PublicController {
 
         Page<Clinic> clinics = clinicService.getTopClinic(pageable);
 
-        return new ResponseEntity<>(clinics.getContent(), HttpStatus.OK);
+        return new ResponseEntity<>(clinics, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageableResult<?>> postSearch(@RequestParam(value = "type", required = false) Integer type,
+    public ResponseEntity<?> postSearch(@RequestParam(value = "type", required = false) Integer type,
                                                      @RequestParam(value = "page", required = false) Integer pageIndex,
                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                                      @RequestBody PostSearchFilter filter){
@@ -87,7 +87,7 @@ public class PublicController {
             //search category e.g at home, examine, surgery...
             case 1 -> {
                 Page<Category> categories = categoryService.searchCategory(filter.getKeyword(), pageable);
-                if (categories.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                if (categories.isEmpty()) return new ResponseEntity<>("No result found", HttpStatus.NOT_FOUND);
                 PageableResult<Category> result = new PageableResult<>(categories.getContent(), categories.getTotalElements(), categories.getTotalPages());
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
@@ -95,7 +95,7 @@ public class PublicController {
             //search clinic
             case 2 -> {
                 Page<Clinic> clinics = clinicService.searchClinic(filter.getKeyword(), pageable);
-                if (clinics.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                if (clinics.isEmpty()) return new ResponseEntity<>("No result found", HttpStatus.NOT_FOUND);
                 PageableResult<Clinic> result = new PageableResult<>(clinics.getContent(), clinics.getTotalElements(), clinics.getTotalPages());
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
@@ -103,7 +103,7 @@ public class PublicController {
             //search doctor
             case 3 -> {
                 Page<Doctor> doctors = doctorService.searchDoctor(filter.getKeyword(), pageable);
-                if (doctors.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                if (doctors.isEmpty()) return new ResponseEntity<>("No result found", HttpStatus.NOT_FOUND);
                 PageableResult<Doctor> result = new PageableResult<>(doctors.getContent(), doctors.getTotalElements(), doctors.getTotalPages());
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
@@ -111,7 +111,7 @@ public class PublicController {
             //search specialization
             case 4 -> {
                 Page<Specialization> specializations = specializationService.searchSpecialization(filter.getKeyword(), pageable);
-                if (specializations.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                if (specializations.isEmpty()) return new ResponseEntity<>("No result found", HttpStatus.NOT_FOUND);
                 PageableResult<Specialization> result = new PageableResult<>(specializations.getContent(), specializations.getTotalElements(), specializations.getTotalPages());
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
@@ -119,7 +119,7 @@ public class PublicController {
             //search post with filter
             default -> {
                 PageableResult<Post> result = postService.searchPost(filter, pageSize, pageIndex);
-                if (result.getContent().isEmpty()) return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+                if (result.getContent().isEmpty()) return new ResponseEntity<>("No result found", HttpStatus.NOT_FOUND);
                 return new ResponseEntity<>(result, HttpStatus.OK);
             }
         }

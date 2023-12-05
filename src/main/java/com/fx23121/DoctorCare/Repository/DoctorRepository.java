@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
@@ -16,4 +17,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
     @Query("SELECT d FROM Doctor d JOIN d.user u WHERE u.name LIKE %:keyword%")
     Page<Doctor> findByNameContaining(@Param("keyword") String keyword, Pageable pageable);
 
+    @Query("FROM Doctor WHERE user.id = :userId")
+    Optional<Doctor> findByUserId(@Param("userId") int userId);
 }

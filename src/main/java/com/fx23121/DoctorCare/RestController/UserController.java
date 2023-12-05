@@ -36,7 +36,7 @@ public class UserController {
     public ResponseEntity<UserInfo> getUserInfo() {
         UserInfo userInfo = userService.getUserInfo();
 
-        return new ResponseEntity<>(userInfo, HttpStatus.FOUND);
+        return new ResponseEntity<>(userInfo, HttpStatus.OK);
     }
 
     @PostMapping("/bookNewAppointment")

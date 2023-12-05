@@ -3,6 +3,7 @@ package com.fx23121.DoctorCare.Service;
 
 import com.fx23121.DoctorCare.Exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -23,36 +24,36 @@ public class JwtService {
     private String SECRET_KEY;
 
     @Value("${jwt.auth-expiration-time-second}")
-    private int AUTH_EXPIRE_TIME;
-    @Value("${jwt.password-reset-expire-time-second}")
-    private int PASSWORD_RESET_EXPIRE_TIME;
+    private long AUTH_EXPIRE_TIME;
 
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
+    //generate key
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
     }
 
+    //generate token from a fully populated Authentication
     public String generateToken(Authentication auth) {
         UserDetails userPrincipal = (UserDetails) auth.getPrincipal();
         Date currentDate = new Date();
 
+        //add username to 'sub' claim or add new claim
         String token = Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .setIssuedAt(currentDate)
                 .setExpiration(new Date(currentDate.getTime() + 1000 * AUTH_EXPIRE_TIME))
-                .signWith(key(), SignatureAlgorithm.HS256)
+                .signWith(key(), SignatureAlgorithm.HS512)
                 .compact();
 
         return token;
     }
 
     private Claims getClaimsFromToken(String token) {
+        //build jwtParser and parse Claims from token
+        return Jwts.parserBuilder().setSigningKey(key()).build().
+                parseClaimsJws(token).getBody();
 
-        return Jwts.parser()
-                .setSigningKey(key())
-                .parseClaimsJws(token)
-                .getBody();
     }
 
     public String getUserNameFromJwt(String token) {
@@ -61,7 +62,7 @@ public class JwtService {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(key()).parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key()).build().parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT: {}", e.getMessage());
@@ -82,17 +83,4 @@ public class JwtService {
         }
     }
 
-    public String generatePasswordResetToken(String userEmail) {
-
-        Date currentDate = new Date();
-
-        String token = Jwts.builder()
-                .setSubject(userEmail)
-                .setIssuedAt(currentDate)
-                .setExpiration(new Date(currentDate.getTime() + 1000 * PASSWORD_RESET_EXPIRE_TIME))
-                .signWith(key(), SignatureAlgorithm.HS256)
-                .compact();
-
-        return token;
-    }
 }

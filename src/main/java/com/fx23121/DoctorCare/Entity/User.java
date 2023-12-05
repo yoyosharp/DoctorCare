@@ -49,8 +49,8 @@ public class User implements UserDetails {
     @Column
     private int enabled;
 
-    @Column(name = "locked")
-    private int notLocked;
+    @Column(name = "non_locked")
+    private int nonLocked;
 
     @Column(name = "create_at")
     private Date createAt;
@@ -63,7 +63,6 @@ public class User implements UserDetails {
                 joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
     private  Set<Role> roles;
-
 
     public User() {
         roles = new HashSet<>();
@@ -92,7 +91,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return notLocked == 1;
+        return nonLocked == 1;
     }
 
     @Override
