@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String requestChangePassword(String email) {
+    public String  requestChangePassword(String email) {
 
         //Find the user in database
         User currentUser = userRepository.findByEmail(email)
